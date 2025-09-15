@@ -1,16 +1,16 @@
 name: CI/CD
 
-on: [ push ]
-
-env:
-  REGISTRY: ${{ secrets.REGISTRY }}
-  REGISTRY_NAMESPACE: ${{ secrets.SCW_NAMESPACE }}
-  IMAGE_NAME: ${{ github.event.repository.name }}
-
 on:
   push:
     branches:
       - develop
+
+# env:
+#   REGISTRY: ${{ secrets.REGISTRY }}
+#   REGISTRY_NAMESPACE: ${{ secrets.SCW_NAMESPACE }}
+#   IMAGE_NAME: ${{ github.event.repository.name }}
+
+
 
 jobs:
   eslint:
