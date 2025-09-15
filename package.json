@@ -1,0 +1,57 @@
+{
+  "name": "goodfood-test",
+  "version": "0.1.0",
+  "main": "dist/src/server.js",
+  "type": "module",
+  "engines": {
+    "node": "22.13.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx --watch src/server.ts",
+    "lint": "eslint . --ext .ts",
+    "start": "node dist/src/server.js ",
+    "build": "npx tsc && tsc-alias",
+    "docker:dev": "docker compose -f compose.dev.yaml up --build -d",
+    "docker:prod": "docker compose -f compose.yaml up --build -d"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/amqplib": "^0.10.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/yamljs": "^0.2.34",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "prisma": "^6.16.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.19.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "amqplib": "^0.10.5",
+    "cors": "^2.8.5",
+    "dd-trace": "^5.31.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "fs": "^0.0.1-security",
+    "i": "^0.3.7",
+    "module-alias": "^2.2.3",
+    "morgan": "^1.10.0",
+    "npm": "^11.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "tsc-alias": "^1.8.10",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^3.24.1"
+  }
+}

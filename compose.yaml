@@ -1,0 +1,23 @@
+
+services:
+  server:
+    build:
+      context: .
+      target: prod
+    ports:
+      - 80:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+    env_file:
+      - .env
+    volumes:
+      - ./certs:/usr/src/app/certs
+      - ./logs:/usr/src/app/logs
+  
+
+networks:
+  app-network:
+    driver: bridge
+

@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@src": ["src/*"],
+      "@/*": ["./*"],
+      // "@controllers/*": ["src/controllers/*"],
+      // "@services/*": ["src/services/*"],
+      // "@routes/*": ["src/routes/*"],
+      // "@certs/*": ["certs/*"],
+      // "@validators/*": ["src/validators/*"],
+      // "@middlewares/*": ["src/middlewares/*"],
+      // "@db/*": ["db/*"],
+      // "@dto/*": ["src/dto/*"],
+      // "@utils/*": ["src/utils/*"],
+      // "@amqp/*": ["src/amqp/*"],
+    },
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    // "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "removeComments": true,
+    // "allowImportingTsExtensions":false,
+    // "skipLibCheck": true,
+    /* The longest common path of all non-declaration input files. */
+    "rootDir": ".",
+    "outDir": "./dist",
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    // Important pour générer les .js
+    "moduleDetection": "force"
+    // "strict": true
+  },
+  "include": ["src/**/*.ts", "prisma/**/*", "certs/**/*"],
+  // "include": ["src/**/*.ts", "package.json", "server.ts", "certs/**/*", "prisma"],
+  "exclude": ["nodes_modules", "dist"],
+}
