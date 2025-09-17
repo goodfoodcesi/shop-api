@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from 'express';
-import {createMenu, getAll} from '@/src/services/menus.services.js';
+import { createMenu, getAll } from '#/services/menus.services.js';
 import { Menus } from '@prisma/client';
 
 

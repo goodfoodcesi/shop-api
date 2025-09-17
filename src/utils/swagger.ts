@@ -1,7 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc"
 import swaggerUi from "swagger-ui-express"
 import { Express, Request, Response } from "express";
-import json from "package.json" with { type: "json" };
+// import json from "package.json" with { type: "json" };
 // import { version } from "package.json"
 
 const options = {
@@ -9,7 +9,7 @@ const options = {
    openapi: '3.0.0',
     info: {
       title: 'Hello World',
-      version: json.version,
+      version: "1.0",
     },
   },
   apis: ['./src/routes/*.ts','./src/routes*.js'],

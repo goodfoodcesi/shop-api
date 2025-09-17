@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from "cors";
-import menuRouter from '@/src/routes/menus.routes.js';
-import franchiseRouter from '@/src/routes/franchises.routes.js';
+import menuRouter from '#/routes/menus.routes.js';
+import franchiseRouter from '#/routes/franchises.routes.js';
+import rateLimit from 'express-rate-limit';
 // import { errorHandler } from '../middlewares/errorMiddlewares';
 // import logger from "@/src/utils/logger.js"
-import rateLimit from 'express-rate-limit';
 // import { publishToQueue } from './amqp/publisher';
 
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', "https://jordanboutrois.fr", "https://preprod.jordanboutrois.fr", "*"];

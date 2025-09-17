@@ -1,6 +1,6 @@
 import { Franchises } from '@prisma/client';
-import prisma from "@/src/utils/prisma.js"
-import { CreateFranchiseDTO, UpdateFranchiseDTO } from '@/src/dto/franchises/create-franchise.dto.js';
+import prisma from "#/utils/prisma.js"
+import { CreateFranchiseDTO, UpdateFranchiseDTO } from '#/dto/franchises/create-franchise.dto.js';
 
 /**
  * Récup toute les franchises

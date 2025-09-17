@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { DisconnectPrismaClient } from "@/src/utils/prisma.js";
-import { CreateFranchiseDTO } from "@/src/dto/franchises/create-franchise.dto.js";
+import { DisconnectPrismaClient } from "#/utils/prisma.js";
+import { CreateFranchiseDTO } from "#/dto/franchises/create-franchise.dto.js";
 
 const prisma = new PrismaClient();
 
@@ -21,7 +21,7 @@ const SeedFranchise = async () => {
         "country": "USA",
         "siret": "12345678901234"
     }
-    let findExisting = await prisma.franchises.findFirst({
+    const findExisting = await prisma.franchises.findFirst({
         where: {
             country: "USA",
         }

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { createNewFranchise, getFranchises } from '@/src/controllers/franchises.controller.js';
-import {validateData} from "@/src/middlewares/validatorMiddlewares.js";
-import {createFranchiseSchema} from "@/src/validators/franchises.validator.js"
+import { createNewFranchise, getFranchises } from '#/controllers/franchises.controller.js';
+import { validateData } from "#/middlewares/validatorMiddlewares.js";
+import { createFranchiseSchema } from "#/validators/franchises.validator.js"
 
 const franchiseRouter = Router();
 
