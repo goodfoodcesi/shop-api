@@ -4,16 +4,21 @@
   "main": "dist/src/server.js",
   "type": "module",
   "engines": {
-    "node": "22.13.x"
+    "node": "23.6.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsx --watch src/server.ts",
+    "dev": "tsx --watch src/server.ts",
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write .",
     "lint": "eslint . --ext .ts",
     "start": "node dist/src/server.js ",
-    "build": "npx tsc && tsc-alias",
     "docker:dev": "docker compose -f compose.dev.yaml up --build -d",
     "docker:prod": "docker compose -f compose.yaml up --build -d"
+  },
+  "imports": {
+    "#*": "./src/*"
   },
   "keywords": [],
   "author": "",
@@ -21,9 +26,11 @@
   "description": "",
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@tsconfig/node22": "^22.0.2",
     "@types/amqplib": "^0.10.6",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
     "@types/yamljs": "^0.2.34",
@@ -32,7 +39,7 @@
     "prisma": "^6.16.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3",
+    "typescript": "^5.9.2",
     "typescript-eslint": "^8.19.1"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 import { Menus} from '@prisma/client';
-import prisma from "@/src/utils/prisma.js"
-import { CreateMenuDTO } from '@/src/dto/menus/create-menu.dto.js';
+import prisma from "#/utils/prisma.js"
+import { CreateMenuDTO } from '#/dto/menus/create-menu.dto.js';
 
 /**
  * Récup tous les menus

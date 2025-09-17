@@ -1,27 +1,22 @@
 import app from "./app.js"
-// import app from "@/src/app"
 import fs from "fs"
 import https from 'https';
-import swaggerDocs from "@/src/utils/swagger.js"
-import { DisconnectPrismaClient } from "@/src/utils/prisma.js";
+import swaggerDocs from "#/utils/swagger.js"
+import { DisconnectPrismaClient } from "#/utils/prisma.js";
 import path from "path";
 import { Express } from "express";
-//import { startConsumers } from "@/src/amqp/consumerManager.js";
-// import { connectRabbitMQ } from "@/src/amqp/connection.js";
-import '@/src/utils/datadog.js';
-import prisma from "@/src/utils/prisma.js";
-import { Seeding } from "@/src/utils/seed.js";
+//import { startConsumers } from "#/amqp/consumerManager.js";
+// import { connectRabbitMQ } from "#/amqp/connection.js";
+import '#/utils/datadog.js';
+import prisma from "#/utils/prisma.js";
+import { Seeding } from "#/utils/seed.js";
 
 // Récupérer le chemin projet root (__dirname en ES module ça marche pas)
 const __filename = import.meta.dirname
 const __dirname = path.dirname(__filename);
 
-const PORT: number = parseInt(process.env.PORT) ?? 80;
+const PORT: number = parseInt(process.env.PORT ?? "80");
 const ENV: string = process.env.ENV ?? "production";
-console.log("ENV", ENV);
-// const ENV: string = process.env.ENV ?? "production";
-// Chemin des certificats 
-// const certPath = './certs/server.crt';
 
 const certsDir = ENV === "production"
   ? path.resolve(__dirname, '../certs') // production, accès à la racine du projet
@@ -83,8 +78,8 @@ function startHttpsServer(env: string, certPath: string, keyPath: string, port: 
     });
 
     
-  } catch (e) {
-    console.error("Error starting HTTPS server:", e.message);
+  } catch (e: unknown) {
+    console.error("Error starting HTTPS server: , e.message");
     process.exit(1);
   }
 }

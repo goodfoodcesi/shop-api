@@ -1,5 +1,5 @@
 import type {Request, Response, NextFunction} from 'express';
-import {createFranchise, getAll, updateFranchise} from '@/src/services/franchises.services.js';
+import { createFranchise, getAll, updateFranchise } from '#/services/franchises.services.js';
 import { Franchises } from '@prisma/client';
 
 /**
