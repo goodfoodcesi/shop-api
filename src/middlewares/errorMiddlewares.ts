@@ -1,17 +1,15 @@
-import { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
-export function errorHandler(err: Error, req: Request, res: Response): void {
-  console.error(" l'erreur: ", err);
+export function errorLogger(err: Error, req: Request, res: Response, _: NextFunction) {
+  req.log.error({
+    msg: 'Unhandled error',
+    error: err.message,
+    stack: err.stack,
+    requestID: req.id,
+  });
 
-  if (err.message.startsWith('AlreadyTakenError')) {
-    res.status(422).json({ message: err.message });
-  } else if (err.message.startsWith('NotFoundError')) {
-    res.status(404).json({ message: err.message });
-  } else if (err.message.startsWith('BadCredentialsError')) {
-    res.status(401).json({ message: err.message });
-  } else if (err.message.startsWith('BadRequestError')) {
-    res.status(400).json({ message: err.message });
-  } else {
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  res.status(500).json({
+    error: 'Internal Server Error',
+    requestID: req.id,
+  });
 }

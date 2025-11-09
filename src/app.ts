@@ -1,13 +1,20 @@
 import express from 'express';
 import cors from "cors";
-import menuRouter from '#/routes/menus.routes.js';
-import franchiseRouter from '#/routes/franchises.routes.js';
+import { shopRouter } from './features/shop'
 import rateLimit from 'express-rate-limit';
-// import { errorHandler } from '../middlewares/errorMiddlewares';
-// import logger from "@/src/utils/logger.js"
-// import { publishToQueue } from './amqp/publisher';
+import { requestIdMiddleware } from '@/middlewares/request-id.middleware';
+import { httpLogger, responseLogger } from "@/middlewares/logger.middleware"
+import { errorLogger } from './middlewares/errorMiddlewares';
+import { openapiRouter } from './middlewares/openapi.middleware';
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', "https://jordanboutrois.fr", "https://preprod.jordanboutrois.fr", "*"];
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  "https://jordanboutrois.fr",
+  "https://preprod.jordanboutrois.fr",
+  "*"
+];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
@@ -16,6 +23,7 @@ const options: cors.CorsOptions = {
 
 const app = express();
 
+// Rate limiter
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, //  1 min
   max: 60,
@@ -23,25 +31,28 @@ const limiter = rateLimit({
   headers: true, 
 });
 
-
-// Logger Request // Todo mise en place des logs dans le bon format avec la bonne librairie
-
-// app.use((req, res, next) => {
-//   logger.http(`${req.method} ${req.url} ${req.hostname}`);
-//   next();
-// })
+if (process.env.NODE_ENV === "production") {
+  app.use(limiter);
+}
 
 // Middlewares
 app.use(express.json())
 app.use(cors(options));
 
-if(process.env.NODE_ENV === "production") {
-  app.use(limiter);
-}
+//Logger
+app.use(requestIdMiddleware);
+app.use(httpLogger);
+app.use(responseLogger);
 
 //Routers
-app.use("/menus", menuRouter)
-app.use("/franchises", franchiseRouter)
+app.use('/shops', shopRouter)
 
+// Docs Scalar
+if (process.env.ENV === "dev") {
+  app.use(openapiRouter);
+}
+
+// Error Handler
+app.use(errorLogger);
 
 export default app;

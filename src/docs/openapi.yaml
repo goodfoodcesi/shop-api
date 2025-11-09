@@ -1,0 +1,429 @@
+openapi: 3.1.0
+info:
+  title: Shop API
+  version: 1.0.0
+  description: API de gestion des boutiques
+
+servers:
+  - url: http://localhost:3000
+    description: Développement
+  - url: https://api.production.com
+    description: Production
+
+tags:
+  - name: Shop
+    description: Gestion des boutiques
+
+paths:
+  /shops:
+    post:
+      tags:
+        - Shop
+      summary: Créer un nouveau shop
+      description: Crée une nouvelle boutique avec les informations fournies
+      operationId: createShop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShopDto'
+            examples:
+              example1:
+                summary: Exemple de création
+                value:
+                  name: "Ma Boutique"
+                  adress: "123 Rue de la Paix"
+                  country: "France"
+                  city: "Paris"
+                  siret: "12345678901234"
+      responses:
+        '201':
+          description: Shop créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+                  message:
+                    type: string
+                    example: "Shop created successfully"
+        '400':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                validationError:
+                  summary: Erreur de validation
+                  value:
+                    error: "Validation error"
+                    details:
+                      - path: ["siret"]
+                        message: "Le SIRET doit contenir exactement 14 chiffres"
+        '409':
+          description: Shop avec ce SIRET existe déjà
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                conflict:
+                  summary: Conflit SIRET
+                  value:
+                    error: "Shop with SIRET 12345678901234 already exists"
+    
+    get:
+      tags:
+        - Shop
+      summary: Lister tous les shops
+      description: Récupère la liste complète de tous les shops
+      operationId: getAllShops
+      responses:
+        '200':
+          description: Liste des shops récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+                  count:
+                    type: integer
+                    description: Nombre total de shops
+                    example: 5
+              examples:
+                success:
+                  summary: Liste de shops
+                  value:
+                    data:
+                      - id: "550e8400-e29b-41d4-a716-446655440000"
+                        name: "Ma Boutique"
+                        adress: "123 Rue de la Paix"
+                        country: "France"
+                        city: "Paris"
+                        siret: "12345678901234"
+                        createdAt: "2025-01-15T10:30:00.000Z"
+                        updatedAt: "2025-01-15T10:30:00.000Z"
+                      - id: "550e8400-e29b-41d4-a716-446655440001"
+                        name: "Autre Shop"
+                        adress: "456 Avenue des Champs"
+                        country: "France"
+                        city: "Lyon"
+                        siret: "98765432109876"
+                        createdAt: "2025-01-16T14:20:00.000Z"
+                        updatedAt: "2025-01-16T14:20:00.000Z"
+                    count: 2
+
+  /shops/{id}:
+    get:
+      tags:
+        - Shop
+      summary: Récupérer un shop par ID
+      description: Récupère les détails d'un shop spécifique via son ID
+      operationId: getShopById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID unique du shop
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Shop trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+              examples:
+                success:
+                  summary: Shop récupéré
+                  value:
+                    data:
+                      id: "550e8400-e29b-41d4-a716-446655440000"
+                      name: "Ma Boutique"
+                      adress: "123 Rue de la Paix"
+                      country: "France"
+                      city: "Paris"
+                      siret: "12345678901234"
+                      createdAt: "2025-01-15T10:30:00.000Z"
+                      updatedAt: "2025-01-15T10:30:00.000Z"
+        '404':
+          description: Shop non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  summary: Shop introuvable
+                  value:
+                    error: "Shop with id 550e8400-e29b-41d4-a716-446655440000 not found"
+    
+    patch:
+      tags:
+        - Shop
+      summary: Mettre à jour un shop
+      description: Met à jour partiellement les informations d'un shop existant
+      operationId: updateShop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID unique du shop
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShopDto'
+            examples:
+              updateName:
+                summary: Modifier le nom
+                value:
+                  name: "Nouveau Nom de Boutique"
+              updateAddress:
+                summary: Modifier l'adresse
+                value:
+                  adress: "789 Boulevard Neuf"
+                  city: "Marseille"
+              fullUpdate:
+                summary: Modification complète
+                value:
+                  name: "Boutique Mise à Jour"
+                  adress: "999 Rue Moderne"
+                  country: "France"
+                  city: "Nice"
+                  siret: "11122233344455"
+      responses:
+        '200':
+          description: Shop mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+                  message:
+                    type: string
+                    example: "Shop updated successfully"
+        '400':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Shop non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: SIRET déjà utilisé par un autre shop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      tags:
+        - Shop
+      summary: Supprimer un shop
+      description: Supprime définitivement un shop de la base de données
+      operationId: deleteShop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID unique du shop
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '204':
+          description: Shop supprimé avec succès (pas de contenu)
+        '404':
+          description: Shop non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  summary: Shop introuvable
+                  value:
+                    error: "Shop with id 550e8400-e29b-41d4-a716-446655440000 not found"
+
+components:
+  schemas:
+    Shop:
+      type: object
+      description: Modèle complet d'un shop
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifiant unique du shop
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: Nom de la boutique
+          example: "Ma Boutique"
+        adress:
+          type: string
+          description: Adresse complète de la boutique
+          example: "123 Rue de la Paix"
+        country:
+          type: string
+          description: Pays de la boutique
+          example: "France"
+        city:
+          type: string
+          description: Ville de la boutique
+          example: "Paris"
+        siret:
+          type: string
+          pattern: '^\d{14}$'
+          description: Numéro SIRET (14 chiffres)
+          example: "12345678901234"
+        createdAt:
+          type: string
+          format: date-time
+          description: Date de création du shop
+          example: "2025-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date de dernière mise à jour
+          example: "2025-01-15T10:30:00.000Z"
+      required:
+        - id
+        - name
+        - adress
+        - country
+        - city
+        - siret
+        - createdAt
+        - updatedAt
+    
+    CreateShopDto:
+      type: object
+      description: Données requises pour créer un nouveau shop
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          description: Nom de la boutique (2-255 caractères)
+          example: "Ma Boutique"
+        adress:
+          type: string
+          minLength: 5
+          description: Adresse complète (minimum 5 caractères)
+          example: "123 Rue de la Paix"
+        country:
+          type: string
+          minLength: 2
+          description: Pays (minimum 2 caractères)
+          example: "France"
+        city:
+          type: string
+          minLength: 2
+          description: Ville (minimum 2 caractères)
+          example: "Paris"
+        siret:
+          type: string
+          pattern: '^\d{14}$'
+          description: Numéro SIRET (exactement 14 chiffres)
+          example: "12345678901234"
+      required:
+        - name
+        - adress
+        - country
+        - city
+        - siret
+    
+    UpdateShopDto:
+      type: object
+      description: Données optionnelles pour mettre à jour un shop
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          description: Nouveau nom de la boutique (optionnel)
+          example: "Nouveau Nom"
+        adress:
+          type: string
+          minLength: 5
+          description: Nouvelle adresse (optionnel)
+          example: "456 Avenue Nouvelle"
+        country:
+          type: string
+          minLength: 2
+          description: Nouveau pays (optionnel)
+          example: "France"
+        city:
+          type: string
+          minLength: 2
+          description: Nouvelle ville (optionnel)
+          example: "Lyon"
+        siret:
+          type: string
+          pattern: '^\d{14}$'
+          description: Nouveau SIRET (optionnel)
+          example: "98765432109876"
+    
+    Error:
+      type: object
+      description: Réponse d'erreur standard
+      properties:
+        error:
+          type: string
+          description: Message d'erreur
+          example: "Shop not found"
+      required:
+        - error
+    
+    ValidationError:
+      type: object
+      description: Erreur de validation avec détails
+      properties:
+        error:
+          type: string
+          example: "Validation error"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: array
+                items:
+                  type: string
+                example: ["siret"]
+              message:
+                type: string
+                example: "Le SIRET doit contenir exactement 14 chiffres"
+      required:
+        - error
+        - details
