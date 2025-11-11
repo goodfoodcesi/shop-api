@@ -37,7 +37,7 @@ docker compose up --build
 ## 🌐 Accès
 
 - API → http://localhost:80  
-- Scalar (doc) → http://localhost:80/openapi  
+- Scalar (doc) → http://localhost:80/docs  
 
 ---
 
