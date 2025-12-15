@@ -49,9 +49,6 @@ RUN npm ci --omit=dev --ignore-scripts && \
 # On copie le build compilé depuis la phase "build"
 COPY --chown=nodejs:nodejs --from=build /usr/src/app/dist ./dist
 
-# On copie le fichier OpenAPI YAML
-COPY --chown=nodejs:nodejs src/docs/openapi.yaml ./dist/docs/openapi.yaml
-
 # Dossier logs
 RUN mkdir -p /usr/src/app/logs && chown -R nodejs:nodejs /usr/src/app/logs
 

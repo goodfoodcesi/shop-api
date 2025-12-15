@@ -1,58 +1,82 @@
-import express from 'express';
-import cors from "cors";
-import { shopRouter } from './features/shop'
-import rateLimit from 'express-rate-limit';
-import { requestIdMiddleware } from '@/middlewares/request-id.middleware';
-import { httpLogger, responseLogger } from "@/middlewares/logger.middleware"
-import { errorLogger } from './middlewares/errorMiddlewares';
-import { openapiRouter } from './middlewares/openapi.middleware';
+import express, { type Response, type Request } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { env } from '@/shared/config/env.js';
+import authRoutes from '@/features/auth/routes.js';
+import { requestLogger } from '@/shared/middlewares/request-logger.middleware.js';
+import { errorHandler, notFoundHandler } from '@/shared/middlewares/error-handler.middleware.js';
+import { logger } from '@/shared/utils/logger.js';
+
+export function createApp() {
+  const app = express();
+
+  app.use(requestLogger);
+
+  // Security
+  app.use(helmet());
+
+  const allowedOrigins = env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        logger.warn('CORS blocked origin', { origin });
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  }));
+
+  // Body parsers
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  app.use(compression());
+
+  // Health check
+  app.get('/health', (_: Request, res: Response) => {
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: env.NODE_ENV,
+    });
+  });
 
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  "https://jordanboutrois.fr",
-  "https://preprod.jordanboutrois.fr",
-  "*"
-];
+  app.use('/api', authRoutes);
 
-const options: cors.CorsOptions = {
-  origin: allowedOrigins,
-  credentials: true,
-};
+  // API root
+  app.get('/api', (_: Request, res: Response) => {
+    res.json({
+      message: 'Collector API v1',
+      version: '1.0.0',
+      endpoints: {
+        health: '/health',
+        auth: {
+          register: 'POST /api/auth/sign-up',
+          login: 'POST /api/auth/sign-in',
+          me: 'GET /api/me',
+        },
+      },
+    });
+  });
 
-const app = express();
+  // API root
+  app.get('/api', (_: Request, res: Response) => {
+    res.json({
+      message: 'Collector API v1',
+      version: '1.0.0',
+      endpoints: {
+        health: '/health',
+        api: '/api',
+      },
+    });
+  });
 
-// Rate limiter
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, //  1 min
-  max: 60,
-  message: 'Trop de requêtes depuis cette IP, veuillez réessayer après une minute.',
-  headers: true, 
-});
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(limiter);
+  return app;
 }
-
-// Middlewares
-app.use(express.json())
-app.use(cors(options));
-
-//Logger
-app.use(requestIdMiddleware);
-app.use(httpLogger);
-app.use(responseLogger);
-
-//Routers
-app.use('/shops', shopRouter)
-
-// Docs Scalar
-if (process.env.ENV === "dev") {
-  app.use(openapiRouter);
-}
-
-// Error Handler
-app.use(errorLogger);
-
-export default app;
