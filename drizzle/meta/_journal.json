@@ -8,6 +8,13 @@
       "when": 1765805317085,
       "tag": "0000_sharp_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765905028238,
+      "tag": "0001_rare_yellowjacket",
+      "breakpoints": true
     }
   ]
 }
