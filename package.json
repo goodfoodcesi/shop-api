@@ -1,7 +1,7 @@
 {
   "name": "collector-api",
   "version": "1.0.0",
-  "description": "API backend pour Collector.shop - Plateforme de vente d'objets de collection",
+  "description": "",
   "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
@@ -22,7 +22,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@tsconfig/node22": "^22.0.2",
@@ -31,6 +30,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.5",
     "@types/pg": "^8.11.10",
     "@types/winston": "^2.4.4",
