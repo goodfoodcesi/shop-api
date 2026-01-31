@@ -2,9 +2,16 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "removeComments": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
     "outDir": "./dist",
     "rootDir": ".",
     "removeComments": true,
@@ -14,9 +21,12 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "strict": true,
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "baseUrl": ".",
@@ -24,6 +34,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests"],
   "exclude": ["node_modules", "dist"]
 }
