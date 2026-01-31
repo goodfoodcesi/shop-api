@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-import { type Request, type Response, type NextFunction } from 'express';
-import { logger } from '@/shared/utils/logger.js';
-import { env } from '../config/env.js';
-
-=======
 import { type Request, type Response } from 'express';
 import { logger, logError } from '@/shared/utils/logger.js';
 import { env } from '@/shared/config/env.js';
->>>>>>> 940faf1 (aller)
 
 /**
  * Middleware global de gestion des erreurs
@@ -17,24 +10,6 @@ export function errorHandler(
   err: any,
   req: Request,
   res: Response,
-<<<<<<< HEAD
-  _: NextFunction
-): void {
-
-  logger.error('Unhandled error', {
-    error: err.message,
-    stack: err.stack,
-    method: req.method,
-    url: req.originalUrl,
-    body: req.body,
-    ip: req.ip,
-  });
-
-
-  const statusCode = err.statusCode || err.status || 500;
-
-
-=======
 ): void {
 
   logError('Unhandled error', err, {
@@ -47,15 +22,10 @@ export function errorHandler(
 
   const statusCode = err.statusCode || err.status || 500;
 
->>>>>>> 940faf1 (aller)
   const message = env.NODE_ENV === 'production' 
     ? 'Internal Server Error' 
     : err.message || 'Something went wrong';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 940faf1 (aller)
   res.status(statusCode).json({
     error: statusCode >= 500 ? 'Internal Server Error' : err.name || 'Error',
     message,
