@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "tsx --watch --env-file=.env src/server.ts",
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json && tsc-esm-fix dist && copyfiles -u 1 'src/**/*.yaml' dist/src/",
-    "type-check": "tsc --noEmit",
     "lint:fix": "eslint --fix .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -17,7 +16,8 @@
     "lint": "eslint . --ext .ts",
     "start": "node --env-file=.env dist/src/server.js ",
     "docker:dev": "docker compose -f compose.dev.yaml up --build -d",
-    "docker:prod": "docker compose -f compose.yaml up --build -d"
+    "docker:prod": "docker compose -f compose.yaml up --build -d",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
