@@ -1,23 +1,49 @@
+version: '3.9'
 
 services:
-  server:
-    build:
-      context: .
-      target: prod
+  postgres:
+    image: postgres:15-alpine
+    container_name: collector-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: collector
+      POSTGRES_PASSWORD: collector_dev_password
+      POSTGRES_DB: collector_db
     ports:
-      - 80:80
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - app-network
-    env_file:
-      - .env
+      - '5432:5432'
     volumes:
-      - ./certs:/usr/src/app/certs
-      - ./logs:/usr/src/app/logs
-  
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - collector-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U collector -d collector_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: collector-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - collector-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
 
 networks:
-  app-network:
+  collector-network:
     driver: bridge
 
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

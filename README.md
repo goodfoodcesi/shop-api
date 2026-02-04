@@ -1,58 +1,68 @@
-# 🛒 Shop API
+# Collector API
 
-API **Node.js / Express / TypeScript** utilisant **Drizzle ORM** (PostgreSQL), **WPino logs** et **Scalar (OpenAPI)**.
-
----
-
-## ⚙️ Prérequis
-
-- Node.js 22.13.x  
-- npm  
-- Docker & Docker Compose  
-- Base PostgreSQL accessible  
-
-Créer un fichier `.env` à la racine avec au minimum :
-
-```
-DATABASE_URL=postgresql://user:password@host:5432/dbname  
-PORT=80  
-ENV=dev
-``
-
----
+API backend pour Collector.shop
 
 ## 🚀 Démarrage rapide
 
-### 👉 En local  
-```BASH
-npm install  
-npm run dev  
+### 1. Installe les dépendances
+```bash
+npm install
 ```
-### 👉 Avec Docker  
-```BASH
-docker compose up --build  
+
+### 2. Configure l'environnement
+```bash
+cp .env.example .env
 ```
----
 
-## 🌐 Accès
-
-- API → http://localhost:80  
-- Scalar (doc) → http://localhost:80/docs  
-
----
-
-## 🧱 Build manuel (optionnel)  
+Génère des secrets :
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
-npm run build  
-npm start  
+
+Édite `.env` et remplace `BETTER_AUTH_SECRET` et `JWT_SECRET` avec les secrets générés.
+
+### 3. Lance Docker
+```bash
+docker-compose up -d
 ```
-Le build est généré dans `dist/`.
 
----
+### 4. Démarre le serveur
+```bash
+npm run dev
+```
 
-## 🧩 En résumé
+### 5. Teste
+```bash
+curl http://localhost:3000/health
+```
 
-| Environnement | Commande | Mode réseau | URL |
-|----------------|-----------|--------------|------|
-| **Local (dev)** | npm run dev | HTTP | http://localhost:80 |
-| **Docker** | docker compose up --build | HTTP | http://localhost:80 |
+## 📁 Structure
+
+```
+collector-api/
+├── src/
+│   ├── db/              # Database (Drizzle)
+│   ├── shared/          # Config, utils
+│   ├── features/        # Feature slices (à venir)
+│   ├── app.ts           # Express config
+│   └── server.ts        # Entry point
+├── drizzle/             # Migrations
+├── docs/                # Documentation
+└── tests/               # Tests
+```
+
+## 🛠️ Commandes
+
+```bash
+npm run dev          # Démarre en mode dev
+npm run build        # Build production
+npm run start        # Lance production
+npm run db:generate  # Génère migrations
+npm run db:migrate   # Applique migrations
+npm run db:studio    # Ouvre Drizzle Studio
+npm test             # Lance tests
+```
+
+## 📚 Documentation
+
+Voir le dossier `/docs` pour la documentation complète d'évaluation.

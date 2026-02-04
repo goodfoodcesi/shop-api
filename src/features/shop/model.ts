@@ -1,36 +1,56 @@
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm'
-import { shop } from '@/db/schemas/shop.schema'
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import { shop, shopAccess, shopDocument } from '@/db/schemas/shop.js';
+import type { WeekSchedule } from '@/shared/types/shop.types.js';
 
-export type Shop = InferSelectModel<typeof shop>
+export type Shop = InferSelectModel<typeof shop>;
+export type ShopAccess = InferSelectModel<typeof shopAccess>;
+export type ShopDocument = InferSelectModel<typeof shopDocument>;
 
+export type InsertShop = InferInsertModel<typeof shop>;
 
-export type InsertShop = InferInsertModel<typeof shop>
-
-export interface CreateShopDto {
-  name: string
-  adress: string
-  country: string
-  city: string
-  siret: string
+export interface CreateShopDTO {
+  name: string;
+  description?: string;
+  email?: string;
+  phone: string;
+  address: string;
+  addressLine2?: string;
+  city: string;
+  zipCode: string;
+  country: string;
+  siret: string;
+  prepTime?: number;
+  schedule?: WeekSchedule;
 }
 
-
-export interface UpdateShopDto {
-  name?: string
-  adress?: string
-  country?: string
-  city?: string
-  siret?: string
+export interface UpdateShopDTO {
+  name?: string;
+  description?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  addressLine2?: string;
+  city?: string;
+  zipCode?: string;
+  country?: string;
+  prepTime?: number;
+  schedule?: WeekSchedule;
+  siret?: string;
+  logo?: string;
+  coverImage?: string;
 }
 
+export interface UploadFileDTO {
+  file: Buffer;
+  filename: string;
+  mimeType: string;
+  size: number;
+}
 
-export interface ShopResponse {
-  id: string
-  name: string
-  adress: string
-  country: string
-  city: string
-  siret: string
-  createdAt: Date
-  updatedAt: Date
+export interface ShopWithDetailsDTO {
+  shop: Shop;
+  documents: ShopDocument[];
+  accesses: ShopAccess[];
+  missingDocuments: string[];
+  canSubmit: boolean;
 }

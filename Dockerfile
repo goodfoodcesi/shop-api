@@ -12,9 +12,8 @@ RUN apk add --no-cache libc6-compat
 ###########################
 FROM base AS dev
 ENV NODE_ENV=development
-COPY package*.json ./
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+COPY package.json ./
+RUN npm ci
 COPY . .
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
@@ -26,10 +25,9 @@ FROM base AS build
 ENV NODE_ENV=development
 COPY package*.json ./
 # 🔧 On installe TOUTES les dépendances (dev + prod)
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+RUN npm ci
 COPY . .
-# 🧱 On build le projet (TypeScript → JS)
+# On build le projet (TypeScript → JS)
 RUN npm run build
 
 ###########################
@@ -43,23 +41,19 @@ RUN apk add --no-cache libc6-compat && \
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
-# 📦 On installe uniquement les dépendances de prod
+# On installe uniquement les dépendances de prod
 COPY --chown=nodejs:nodejs package*.json ./
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev --ignore-scripts && \
+RUN npm ci --omit=dev --ignore-scripts && \
     npm cache clean --force
 
-# 🧱 On copie le build compilé depuis la phase "build"
+# On copie le build compilé depuis la phase "build"
 COPY --chown=nodejs:nodejs --from=build /usr/src/app/dist ./dist
 
-# 📄 On copie le fichier OpenAPI YAML
-COPY --chown=nodejs:nodejs src/docs/openapi.yaml ./dist/docs/openapi.yaml
-
-# 🪵 Dossier logs
+# Dossier logs
 RUN mkdir -p /usr/src/app/logs && chown -R nodejs:nodejs /usr/src/app/logs
 
 USER nodejs
 EXPOSE 80
 
-# 🚀 Lancement du serveur
+# Lancement du serveur
 CMD ["node", "--no-deprecation", "./dist/src/server.js"]

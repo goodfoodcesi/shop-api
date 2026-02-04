@@ -2,17 +2,20 @@ node_modules
 # Keep environment variables out of version control
 .env
 !.env.example
+.env
+.env.local
 
-./dist
+/dist/
+dist/
 
 #Virer les logs
-/logs/
 logs/
+*.log
 
 #Virer certs server
 certs/
 certs/*.pem
-
-# Build output
-/dist/
-dist/
+/docs/*
+.DS_Store
+.vscode/
+.idea/logs/

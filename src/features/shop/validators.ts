@@ -1,20 +1,72 @@
-import { z } from 'zod'
+import { z } from "zod";
+import type { Request, Response, NextFunction } from "express";
 
-export const createShopValidator = z.object({
-  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères').max(255),
-  adress: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
-  country: z.string().min(2, 'Le pays doit contenir au moins 2 caractères'),
-  city: z.string().min(2, 'La ville doit contenir au moins 2 caractères'),
-  siret: z.string().length(14, 'Le SIRET doit contenir exactement 14 chiffres').regex(/^\d{14}$/, 'Le SIRET doit contenir uniquement des chiffres')
-})
+// ==========================================
+// SCHEMAS
+// ==========================================
 
-export const updateShopValidator = z.object({
-  name: z.string().min(2).max(255).optional(),
-  adress: z.string().min(5).optional(),
-  country: z.string().min(2).optional(),
-  city: z.string().min(2).optional(),
-  siret: z.string().length(14).regex(/^\d{14}$/).optional()
-})
+export const createShopSchema = z.object({
+  name: z.string().min(2),
+  description: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().min(5),
+  address: z.string().min(3),
+  addressLine2: z.string().optional(),
+  city: z.string().min(2),
+  zipCode: z.string().min(3),
+  country: z.string().min(2),
+  siret: z.string().min(5),
+  prepTime: z.number().int().min(0).optional(),
+});
 
-export type CreateShopInput = z.infer<typeof createShopValidator>
-export type UpdateShopInput = z.infer<typeof updateShopValidator>
+export const updateShopSchema = createShopSchema.partial();
+
+// ==========================================
+// MIDDLEWARES
+// ==========================================
+
+export function validateCreateShop(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    req.body = createShopSchema.parse(req.body);
+    return next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: error.errors.map(e => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
+      });
+    }
+
+    return next(error);
+  }
+}
+
+export function validateUpdateShop(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    req.body = updateShopSchema.parse(req.body);
+    return next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: error.errors.map(e => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
+      });
+    }
+
+    return next(error);
+  }
+}
