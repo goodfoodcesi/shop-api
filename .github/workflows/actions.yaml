@@ -8,6 +8,44 @@ on:
       - 'v*'
 
 jobs:
+  test:
+    name: 🧪 Tests & Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 TypeScript check
+        run: npm run typecheck
+
+      - name: 🎨 Lint
+        run: npm run lint
+
+      - name: 🏗️ Build
+        run: npm run build
+
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trivy scan (deps + repo)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
   build-and-deploy:
     name: 🐳 Build (amd64) & Push (Scaleway) + Update infra
     runs-on: ubuntu-latest

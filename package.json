@@ -1,5 +1,5 @@
 {
-  "name": "collector-api",
+  "name": "shop-api",
   "version": "1.0.0",
   "description": "",
   "main": "dist/src/server.js",
@@ -23,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.39.2",
     "@tsconfig/node22": "^22.0.2",
     "@types/amqplib": "^0.10.6",
     "@types/compression": "^1.8.1",
@@ -39,16 +39,18 @@
     "@vitest/coverage-v8": "^2.1.8",
     "@vitest/ui": "^2.1.8",
     "drizzle-kit": "^0.30.2",
-    "eslint": "^9.17.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^17.3.0",
+    "jiti": "^2.6.1",
     "prettier": "^3.4.2",
     "supertest": "^7.0.0",
     "tsc-alias": "^1.8.16",
     "tsc-esm-fix": "^3.1.2",
     "tsx": "^4.19.2",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.19.1"
+    "typescript-eslint": "^8.54.0"
   },
   "dependencies": {
     "@scalar/express-api-reference": "^0.8.24",
