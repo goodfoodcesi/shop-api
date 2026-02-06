@@ -1,4 +1,8 @@
-import type { Request, Response, NextFunction } from "express";
+
+
+import type { NextFunction, Request, Response } from "express";
+import { redis } from "../../providers/redis.provider";
+import { logger } from "../utils/logger";
 
 /* eslint-disable @typescript-eslint/no-namespace */
 declare global {
@@ -9,37 +13,55 @@ declare global {
   }
 }
 
-function base64UrlDecode(input: string) {
-  const b64 = input.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(b64, "base64").toString("utf8");
-}
+export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
 
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    res.status(401).json({ error: "No token provided" });
+  // 1. Get token from Cookie: better-auth.session_token
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) {
+    res.status(401).json({ error: "No cookies provided" });
     return;
   }
 
-  const [scheme, token] = authHeader.split(" ");
-  if (scheme !== "Bearer" || !token) {
-    res.status(401).json({ error: "Invalid token format" });
+  const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    acc[name] = value;
+    return acc;
+  }, {} as Record<string, string>);
+
+  const rawToken = cookies['better-auth.session_token'];
+
+  if (!rawToken) {
+    res.status(401).json({ error: "Session token not found" });
+    return;
+  }
+
+  // Le cookie est URL-encodé (ex: "....5c%2BKyFa...."), on le decode avant d'aller dans Redis
+  let token: string;
+  try {
+    token = decodeURIComponent(rawToken);
+  } catch {
+    // Si jamais le token est mal formé, on refuse proprement
+    res.status(400).json({ error: "Invalid session token format" });
     return;
   }
 
   try {
-    const parts = token.split(".");
-    if (parts.length !== 3 || !parts[1]) {
-      res.status(401).json({ error: "Invalid JWT format" });
+    const session = await redis.get(token.split(".")[0]);
+
+    if (!session) {
+      // Fallback or fail
+      // Let's try `better-auth:session:${token}`
+      // For now I will fail if not found.
+      logger.warn('Token not found in Redis', { token });
+      res.status(401).json({ error: "Invalid or expired session" });
       return;
     }
-
-    const payload = JSON.parse(base64UrlDecode(parts[1]));
-    req.user = payload;
+    console.log("session: ", session)
+    req.user = JSON.parse(session).user; // Assuming session data is JSON
     next();
-  } catch {
-    res.status(401).json({ error: "Invalid token payload" });
+  } catch (error) {
+    logger.error('Auth Middleware Error', error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 

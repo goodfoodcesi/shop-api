@@ -6,6 +6,7 @@ export function requireUserType(...allowed: string[]) {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
+    console.log("req user: ", req.user)
     console.log("req user type: ", req.user.userType)
     const userType = req.user.userType;
 

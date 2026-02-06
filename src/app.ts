@@ -7,6 +7,7 @@ import { errorHandler, notFoundHandler } from '@/shared/middlewares/error-handle
 import menusRoutes from '@/features/menus/routes.js';
 import shopRoutes from '@/features/shop/routes.js';
 import adminRoutes from '@/features/admin/routes.js';
+import orderRoutes from '@/features/orders/routes.js';
 import { loggingMiddleware } from '@/shared/middlewares/logging.js';
 // import { metricsHandler } from './providers/prometheus.js';
 
@@ -46,6 +47,7 @@ export function createApp() {
 
   app.use('/shop', shopRoutes);
   app.use('/menus', menusRoutes);
+  app.use('/orders', orderRoutes);
   app.use("/admin", adminRoutes);
 
 

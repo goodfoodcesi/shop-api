@@ -8,6 +8,13 @@
       "when": 1768649473075,
       "tag": "0000_hesitant_cable",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770209615323,
+      "tag": "0001_open_the_enforcers",
+      "breakpoints": true
     }
   ]
 }

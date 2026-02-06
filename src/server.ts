@@ -2,19 +2,19 @@ import { createApp } from './app.js';
 import { env } from './shared/config/env.js';
 import { closeDatabase } from './db/index.js';
 import { logger } from "@/shared/utils/logger.js"
-// import { initRabbitMQ, closeRabbitMQ, getChannel } from './providers/rabbitmq.js';
+import { rabbitMQProvider } from './providers/rabbitmq.provider.js';
 // import { startUserEventsConsumer } from '@/consumers/user-events.js';
 
 
 (async () => {
   try {
 
-    // await initRabbitMQ();
+    await rabbitMQProvider.connect();
     // logger.info('✅ RabbitMQ connected');
 
-    // const channel = getChannel();
+    // const channel = await rabbitMQProvider.getChannel();
     // if (channel) {
-    //   await startUserEventsConsumer(channel);
+    //   // await startUserEventsConsumer(channel);
     // }
 
     // Créer l'app Express
