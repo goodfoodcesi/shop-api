@@ -112,7 +112,7 @@ jobs:
           cd goodfood-infra
 
           # On suit la même branche que le repo applicatif (main/dev)
-          git checkout ${BRANCH} || git checkout -b ${BRANCH}
+          git checkout main || git checkout -b main
 
           # Aller dans le bon overlay
           # cd k3s/overlays/${OVERLAY}
@@ -137,6 +137,6 @@ jobs:
           # git add k3s/overlays/${OVERLAY}/kustomization.yaml
           git add k3s/overlays/preprod/kustomization.yaml
           git commit -m "🚀 Deploy ${SERVICE_NAME}:${IMAGE_TAG} (${OVERLAY})"
-          git push origin ${BRANCH}
+          git push origin main
 
           echo "✅ Updated ${SERVICE_NAME} to ${IMAGE_TAG} in preprod"
