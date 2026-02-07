@@ -12,7 +12,6 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   ALLOWED_ORIGINS: z.string(),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
-  JWT_SECRET: z.string(),
   
   // MinIO (optionnel)
   MINIO_ENDPOINT: z.string().optional(),
