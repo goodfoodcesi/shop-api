@@ -15,9 +15,13 @@ declare global {
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
 
-  // 1. Get token from Cookie: better-auth.session_token
+  // 1. Get token from Cookie: better-auth.session_data
   const cookieHeader = req.headers.cookie;
+
+  logger.info('🔍 Auth check', { path: req.path, hasCookie: !!cookieHeader });
+
   if (!cookieHeader) {
+    logger.warn('❌ No cookie header');
     res.status(401).json({ error: "No cookies provided" });
     return;
   }
@@ -30,7 +34,10 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
   const rawToken = cookies['better-auth.session_data'];
 
+  logger.info('🍪 Cookies', { names: Object.keys(cookies), hasSessionData: !!rawToken });
+
   if (!rawToken) {
+    logger.warn('❌ Session cookie missing', { available: Object.keys(cookies) });
     res.status(401).json({ error: "Session token not found" });
     return;
   }
