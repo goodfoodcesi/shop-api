@@ -10,19 +10,19 @@ export const shop = pgTable("shop", {
 
   // Contact
   email: text("email"),
-  phone: text("phone"),
+  phone: text("phone").notNull(),
 
   // Adresse
   address: text("address").notNull(),
   addressLine2: text("address_line_2"),
-  city: text("city"),
-  zipCode: text("zip_code"),
-  country: text("country"),
+  city: text("city").notNull(),
+  zipCode: text("zip_code").notNull(),
+  country: text("country").notNull(),
   latitude: text("latitude"),
   longitude: text("longitude"),
 
   // Légal
-  siret: text("siret"),
+  siret: text("siret").notNull(),
 
   // Médias (MinIO URLs)
   logo: text("logo"),
