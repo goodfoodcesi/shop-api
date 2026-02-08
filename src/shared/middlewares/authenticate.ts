@@ -28,7 +28,7 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
     return acc;
   }, {} as Record<string, string>);
 
-  const rawToken = cookies['better-auth.session_token'];
+  const rawToken = cookies['better-auth.session_data'];
 
   if (!rawToken) {
     res.status(401).json({ error: "Session token not found" });
