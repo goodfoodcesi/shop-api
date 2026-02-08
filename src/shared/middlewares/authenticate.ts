@@ -53,16 +53,37 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
   }
 
   try {
-    const session = await redis.get(token.split(".")[0]);
+    // Parse the JWT token to get the session ID
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      res.status(400).json({ error: "Invalid token format" });
+      return;
+    }
+
+    // Decode the payload (second part of JWT)
+    const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+    const sessionToken = payload.session?.session?.token;
+
+    if (!sessionToken) {
+      logger.warn('No session token in JWT payload');
+      res.status(401).json({ error: "Invalid session token" });
+      return;
+    }
+
+    // Try different Redis key formats
+    let session = await redis.get(`better-auth:session:${sessionToken}`);
 
     if (!session) {
-      // Fallback or fail
-      // Let's try `better-auth:session:${token}`
-      // For now I will fail if not found.
-      logger.warn('Token not found in Redis', { token });
+      // Fallback: try without prefix
+      session = await redis.get(sessionToken);
+    }
+
+    if (!session) {
+      logger.warn('Token not found in Redis', { sessionToken });
       res.status(401).json({ error: "Invalid or expired session" });
       return;
     }
+
     console.log("session: ", session)
     req.user = JSON.parse(session).user; // Assuming session data is JSON
     next();
