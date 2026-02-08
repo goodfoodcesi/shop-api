@@ -52,12 +52,15 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
   }
 
   try {
-    // Use the token directly as Redis key (it's a simple string, not a JWT)
-    // This matches order-api logic
-    const session = await redis.get(token);
+    // Use the first part of the token (before the dot) as Redis key
+    // The token format is: "waQbisNanuwcscRKtcsVMkdBd1iGSBFW.signature"
+    // Redis stores only: "waQbisNanuwcscRKtcsVMkdBd1iGSBFW"
+    const sessionKey = token.split(".")[0];
+
+    const session = await redis.get(sessionKey);
 
     if (!session) {
-      logger.warn('Token not found in Redis', { token });
+      logger.warn('Token not found in Redis', { sessionKey });
       res.status(401).json({ error: "Invalid or expired session" });
       return;
     }
