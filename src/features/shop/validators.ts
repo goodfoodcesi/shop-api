@@ -19,6 +19,7 @@ export const createShopSchema = z.object({
   prepTime: z.number().int().min(0).optional(),
   category: z.string().optional(),
   imageUrl: z.string().url().optional(),
+  schedule: z.any().optional(), // WeekSchedule type
 });
 
 export const updateShopSchema = createShopSchema.partial();
