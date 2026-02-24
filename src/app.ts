@@ -37,7 +37,7 @@ export function createApp() {
   app.get('/health', (_: Request, res: Response) => {
     res.json({
       status: 'ok',
-      service: 'shop-api',
+      service: 'test',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       environment: env.NODE_ENV,
