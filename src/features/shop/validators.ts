@@ -18,7 +18,8 @@ export const createShopSchema = z.object({
   siret: z.string().min(5).optional(),
   prepTime: z.number().int().min(0).optional(),
   category: z.string().optional(),
-  imageUrl: z.string().url().optional(),
+  logo: z.string().url().optional(),
+  coverImage: z.string().url().optional(),
   schedule: z.any().optional(), // WeekSchedule type
 });
 
