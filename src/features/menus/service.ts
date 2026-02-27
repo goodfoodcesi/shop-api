@@ -108,7 +108,7 @@ export async function createMenuService(userId: string, data: CreateMenuDTO, org
     category: data.category ?? null,
     options: data.options ? JSON.stringify(data.options) : null,
     displayOrder: data.displayOrder ?? 0,
-    imageUrl: null,
+    imageUrl: data.imageUrl ?? null,
     isPublished: false,
     isDeleted: false,
     createdBy: userId,
@@ -324,6 +324,7 @@ export async function createMenuFromBodyService(userId: string, body: any, organ
     category: body.category,
     options,
     displayOrder: body.displayOrder,
+    imageUrl: body.imageUrl,
   };
 
   return createMenuService(userId, data, organizationIds);

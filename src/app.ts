@@ -22,7 +22,7 @@ export function createApp() {
 
   const allowedOrigins = env.ALLOWED_ORIGINS?.split(',') || [];
   app.use(cors({
-    origin: allowedOrigins,
+    origin: [...allowedOrigins],
     credentials: true,
   }));
 
@@ -36,7 +36,7 @@ export function createApp() {
   // health check
   app.get('/health', (_: Request, res: Response) => {
     res.json({
-      status: 'ok romain
+      status: 'ok',
       service: 'shop-api',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),

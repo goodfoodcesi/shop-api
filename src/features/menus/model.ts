@@ -37,6 +37,7 @@ export interface CreateMenuDTO {
   category?: string;
   options?: MenuOption[];
   displayOrder?: number;
+  imageUrl?: string;
 }
 
 export interface UpdateMenuDTO {

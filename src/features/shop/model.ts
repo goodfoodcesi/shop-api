@@ -21,6 +21,8 @@ export interface CreateShopDTO {
   siret: string;
   prepTime?: number;
   schedule?: WeekSchedule;
+  logo?: string;
+  coverImage?: string;
 }
 
 export interface UpdateShopDTO {

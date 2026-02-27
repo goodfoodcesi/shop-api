@@ -9,14 +9,18 @@ export const createShopSchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
   email: z.string().email().optional(),
-  phone: z.string().min(5),
+  phone: z.string().min(5).optional(),
   address: z.string().min(3),
   addressLine2: z.string().optional(),
-  city: z.string().min(2),
-  zipCode: z.string().min(3),
-  country: z.string().min(2),
-  siret: z.string().min(5),
+  city: z.string().min(2).optional(),
+  zipCode: z.string().min(3).optional(),
+  country: z.string().min(2).optional(),
+  siret: z.string().min(5).optional(),
   prepTime: z.number().int().min(0).optional(),
+  category: z.string().optional(),
+  logo: z.string().url().optional(),
+  coverImage: z.string().url().optional(),
+  schedule: z.any().optional(), // WeekSchedule type
 });
 
 export const updateShopSchema = createShopSchema.partial();

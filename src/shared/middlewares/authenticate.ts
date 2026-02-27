@@ -15,9 +15,13 @@ declare global {
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
 
-  // 1. Get token from Cookie: better-auth.session_token
+  // 1. Get token from Cookie: better-auth.session_token (not session_data!)
   const cookieHeader = req.headers.cookie;
+
+  logger.info('🔍 Auth check', { path: req.path, hasCookie: !!cookieHeader });
+
   if (!cookieHeader) {
+    logger.warn('❌ No cookie header');
     res.status(401).json({ error: "No cookies provided" });
     return;
   }
@@ -30,34 +34,40 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
   const rawToken = cookies['better-auth.session_token'];
 
+  logger.info('🍪 Cookies', { names: Object.keys(cookies), hasSessionToken: !!rawToken });
+
   if (!rawToken) {
+    logger.warn('❌ Session cookie missing', { available: Object.keys(cookies) });
     res.status(401).json({ error: "Session token not found" });
     return;
   }
 
-  // Le cookie est URL-encodé (ex: "....5c%2BKyFa...."), on le decode avant d'aller dans Redis
+  // Le cookie est URL-encodé, on le decode
   let token: string;
   try {
     token = decodeURIComponent(rawToken);
   } catch {
-    // Si jamais le token est mal formé, on refuse proprement
     res.status(400).json({ error: "Invalid session token format" });
     return;
   }
 
   try {
-    const session = await redis.get(token.split(".")[0]);
+    // Use the first part of the token (before the dot) as Redis key
+    // The token format is: "waQbisNanuwcscRKtcsVMkdBd1iGSBFW.signature"
+    // Redis stores only: "waQbisNanuwcscRKtcsVMkdBd1iGSBFW"
+    const sessionKey = token.split(".")[0];
+
+    const session = await redis.get(sessionKey);
 
     if (!session) {
-      // Fallback or fail
-      // Let's try `better-auth:session:${token}`
-      // For now I will fail if not found.
-      logger.warn('Token not found in Redis', { token });
+      logger.warn('Token not found in Redis', { sessionKey });
       res.status(401).json({ error: "Invalid or expired session" });
       return;
     }
+
+    logger.info('✅ Session found in Redis');
     console.log("session: ", session)
-    req.user = JSON.parse(session).user; // Assuming session data is JSON
+    req.user = JSON.parse(session).user;
     next();
   } catch (error) {
     logger.error('Auth Middleware Error', error);
