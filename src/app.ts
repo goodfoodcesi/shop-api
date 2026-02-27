@@ -36,7 +36,7 @@ export function createApp() {
   // health check
   app.get('/health', (_: Request, res: Response) => {
     res.json({
-      status: 'ok',
+      status: 'o,
       service: 'shop-api',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
